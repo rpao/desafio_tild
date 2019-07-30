@@ -1,0 +1,15 @@
+Caso não tenha o Node.js instalado:
+1 - install node.js (versão utilizada nesse projeto é a 10.16.0 LTS)
+
+Caso não tenha o Vue.js:
+2 - npm install -g @vue/cli (versão utilizada nesse projeto é a 3.9.3)
+
+Caso não tenha o Axios instalado:
+3 - npm install --save axios vue-axios
+
+4 - npm install sass-loader --save-dev
+
+npm install --save jquery
+
+Para iniciar a execução
+5 - npm run serve

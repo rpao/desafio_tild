@@ -8,21 +8,22 @@
   </head>
 
   <body>
-    <!--NAVBAR-->
-    <nav class="navbar navbar-expand-lg navbar-light" >
-      <div class="container"> 
-        <a class="navbar-brand text-primary" href="home.html">
-          <i class="fa d-inline fa-lg fa-circle-o"></i>
-          <b>DesafioTILD</b>
-        </a> 
-        <div class="collapse navbar-collapse" id="navbar5">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item"> <a class="nav-link" href="newUser.html">Cadastro</a> </li>
-          </ul><a class="btn btn-outline-primary navbar-btn ml-md-2" onclick="$('#modalLogin').modal();">Entrar</a>
+    <!--modal erro login-->
+    <div class="modal" id="erroLogin">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" >
+            <h5 class="modal-title">Falha de Login</h5> <button type="button" class="close" data-dismiss="modal"> <span>×</span> </button>
+          </div>
+          <div class="modal-body">
+            <p>Usuário não encontrado ou não existe!</p>
+          </div>
+          <div class="modal-footer"> <button type="button" class="btn btn-secondary" onclick="reload()">Ok</button> </div>
         </div>
       </div>
-    </nav>
-
+    </div>
+    
+    <!--modal de login-->
     <div class="modal" id="modalLogin">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -34,16 +35,10 @@
           <div class="modal-body">
             <form id="loginForm" @submit="checkForm">              
               <div class="form-group row"> 
-                <label for="email" class="col-2 col-form-label">E-mail: </label>
+                <label for="id" class="col-2 col-form-label">ID: </label>
                 <div class="col-10">
-                  <input type="email" class="form-control" id="email" v-model="email" required> 
+                  <input type="number" class="form-control" id="id" v-model="id" required> 
                 </div>
-              </div>
-              <div class="form-group row"> 
-                <label for="password" class="col-2 col-form-label">Senha: </label>
-                <div class="col-10">
-                  <input type="password" v-model="password" class="form-control" id="password" name="password" minlength="4" maxlength="8" required> 
-                  <a href="#" class="card-link">Esqueci a senha!</a> </div>
               </div>
               <div class="modal-footer">
                 <div class="form-group row">
@@ -55,20 +50,138 @@
         </div>
       </div>
     </div>
-    <!--NAVBAR-->
-    
-    <div class="py-5 text-center shadow">
-      <div class="container">
-        <div id="postDetails" class="row">
-          <div class="col-md-12 col-10 bg-white p-5 shadow border-primary border rounded-lg text-left">
-              <div class="col-md-12">
-                <h3 class="mb-2 text-center">{{post.title}}</h3>
-                <img class="img-fluid d-block mx-auto" v-bind:src="post.image">
-                <p class="text-justify">{{post.content}}</p>
-                <br>
-                <h6 class="text-primary" ><span><b>Autor: {{post.user.name}}</b></span></h6>
-                <h6 class="text-primary" ><span v-if="post.created_at">Criado em {{post.created_at}}</span> | <span v-if="post.updated_at">Última edição em {{post.updated_at}}</span></h6>
+
+    <!--modal de logout-->
+    <div class="modal" id="modalSair">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Sair</h5> 
+            <button type="button" class="close" data-dismiss="modal"><span>×</span> </button>
+          </div>
+
+          <div class="modal-body">
+            <form id="logoutForm" @submit="checkForm">              
+              <div class="form-group row">
+                <button type="submit" class="btn btn-primary text">Sair</button>
+                <button type="button" class="close" data-dismiss="modal">Cancelar</button>
               </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="postDetails" class="py-5 text-center shadow">
+      <!--NAVBAR-->
+      <nav class="navbar navbar-expand-lg navbar-light" >
+        <div class="container"> 
+          <a class="navbar-brand text-primary">
+            <i class="fa d-inline fa-lg fa-circle-o"></i>
+            <b>DesafioTILD</b>
+          </a> 
+          <!--se nenhum usuário logado-->
+          <div class="collapse navbar-collapse" id="navbar5" v-if="user_id == null || user_id == undefined">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"> <a class="nav-link" href="newUser.html">Cadastro</a> </li>
+            </ul>
+            <a class="btn btn-outline-primary navbar-btn ml-md-2" onclick="$('#modalLogin').modal();">Entrar</a>
+          </div>
+          <!--se usuário logado-->
+          <div class="collapse navbar-collapse" id="navbar5" v-if="user_id != null && user_id != undefined">
+            <ul class="navbar-nav ml-auto">
+              <li class="nav-item"> <a class="nav-link" href="conta.html">Conta</a> </li>
+              <li class="nav-item"> <a class="nav-link" href="newPost.html">Novo Post</a> </li>
+            </ul>
+            <a class="btn btn-outline-primary navbar-btn ml-md-2" onclick="$('#modalSair').modal();">Sair</a>
+          </div>
+        </div>
+      </nav>
+      <!--NAVBAR-->
+      
+      <!--componente de view do post-->
+      <div class="container">
+        <!--se encontrou o post com o id recebido na url-->
+        <div v-if="post">
+          <div class="row">
+            <div class="col-md-12 col-10 bg-white p-5 shadow border-primary border rounded-lg text-left">
+              <h3 class="mb-2 text-center"><b>{{post.title}}</b></h3>
+              <img class="img-fluid d-block mx-auto" v-bind:src="post.image">
+              <p class="text-justify">{{post.content}}</p>
+              <br>
+              <h6 class="text-primary" ><span><b>Autor: {{post.user.name}}</b></span></h6>
+              <h6 class="text-primary" ><span v-if="post.created_at">Criado em {{post.created_at}}</span> | <span v-if="post.updated_at">Última edição em {{post.updated_at}}</span></h6>
+              <br>
+              <a class="btn btn-outline-primary text-right" v-if="post.user_id == user_id" v-on:click="editarPost(post.id)">Editar</a>
+            </div>
+          </div>
+          <!--seção de comentários-->
+          <div class="row">
+            <div class="col-md-12 col-10 bg-light p-5 text-left">
+              <h5 class="mb-2 text-left text-primary"><b>Comentários:</b></h5>
+              <!--se há comentários-->
+              <div class="row" v-if="post.comments">
+                <div class="col-md-12">
+                  <div v-for="comentario in post.comments">
+                    <div class="row">
+                      <div class="col-md-12 py-2">
+                        <div class="card">
+                          <div class="card-header bg-primary text-light justify-content-between">
+                            <h6 class="mb-1" v-if="comentario.title"><b>{{comentario.title}}</b>&nbsp;&nbsp;<small style="font-size: 12px"><b>(criado em {{comentario.created_at}})</b></small></h6>
+                            <h6 class="mb-1" v-if="!comentario.title"><b>Sem Título</b>&nbsp;&nbsp;<small style="font-size: 12px"><b>(criado em {{comentario.created_at}})</b></small></h6>                             
+                          </div>
+                          <div class="card-body">
+                            <p class="mb-1">{{comentario.content}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--se não há comentários-->
+              <div class="col-md-12" v-if="!post.comments">
+                <p class="text-justify">Não há comentários para este post...</p>
+              </div>
+              <!--enviar comentário-->
+              <div class="py-2">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-md-12" v-if="user_id != null && user_id != undefined">
+                      <div class="card">
+                        <div class="card-header">Novo Comentário</div>
+                        <div class="card-body">
+                          <form @submit="checkForm">
+                            <div class="form-group" > 
+                              <label for="title">Título:</label>
+                              <input id="title" class="form-control" v-model="novoComentario.title"></textarea>
+                            </div>
+                            <div class="form-group" > 
+                              <label for="content">Comentário:</label>
+                              <textarea id="content" rows="4" class="form-control" v-model="novoComentario.content" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Enviar</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"  v-if="user_id == null || user_id == undefined">
+                      <p><b>Para enviar um comentário, é preciso fazer login.</b></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--se não encontrou o post com o id recebido na url-->
+        <div v-if="!post" class="col-md-12 col-10 bg-white p-5 shadow border-primary border rounded-lg text-left">
+          <div class="col-md-12">
+            <h3 class="mb-2 text-center">Perdão...</h3>
+            <p class="text-justify">Não foi possível encontrar esse post...</p>
+            <br>
+            <a class="btn btn-outline-danger" v-on:click="voltar()">Voltar</a>
           </div>
         </div>
       </div>
@@ -76,6 +189,7 @@
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
     <script src="scripts/script_viewPost.js"></script>
 

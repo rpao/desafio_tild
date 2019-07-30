@@ -73,7 +73,7 @@
       </div>
     </div>
 
-    <div id="postList">
+    <div id="user">    
       <!--NAVBAR-->
       <nav class="navbar navbar-expand-lg navbar-light" >
         <div class="container"> 
@@ -97,71 +97,66 @@
         </div>
       </nav>
       <!--NAVBAR-->
-      
-      <!--lista de todos os posts-->
-      <div class="row" v-if="dados.data">
+
+      <div class="row" v-if="user_id != null & user_id != undefined">
         <div class="container">
-          <div v-for="item in dados.data">
-            <div class="py-2">
-              <div class="py-5 mx-auto col-md-12 col-10 bg-white py-5 shadow">
-                <div class="col-md-12" >
-                  <h3 class="mb-2 text-center">{{item.title}}</h3>
-                  <img class="img-fluid d-block mx-auto" v-bind:src="item.image">
-                  <h6 class="text-primary" ><span><b>Autor: {{item.user_id}}</b></span><br><span v-if="item.created_at">Criado em {{item.created_at}}</span> | <span v-if="item.updated_at">Última edição em {{item.updated_at}}</span></h6>
-                  <p class="text-justify">{{item.content}}&nbsp;<b>[...]</b></p>
-                  <a class="btn btn-outline-primary text-right" v-on:click="verMais(item.id)">Ver mais...</a>
+          <div class="py-2">
+            <div class="py-5 mx-auto col-md-12 col-10 bg-white py-5 shadow">
+              <div class="col-md-12" >
+                <h3 class="mb-2 text-primary text-left"><span>{{dadosUser.name}}</span></h3>
+                <div class="col-md-12">
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><i class="fa text-primary mr-2 fa-birthday-cake"></i>Idade: {{dadosUser.age}} anos</li>
+                    <li class="list-group-item"><i class="fa text-primary mr-2 fa-envelope"></i>&nbsp;E-Mail: {{dadosUser.email}}</li>
+                    <li class="list-group-item"><i class="fa text-primary mr-2 fa-bookmark"></i>&nbsp;Conta criada em {{dadosUser.created_at}}</li>
+                    <li class="list-group-item" ><i class="fa fa-wrench text-primary mr-2"></i> Pefil atualizado em {{dadosUser.updated_at}}</li>
+                  </ul>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!--mensagem caso nenhum post seja encontrado-->
-      <div class="row" v-if="!dados.data">
         <div class="container">
-          <div>
-            <div class="py-2">
-              <div class="py-5 mx-auto col-md-12 col-10 bg-white py-5 shadow">
-                <div class="col-md-12" >
-                  <p class="text-justify">Nenhuma postagem encontrada&nbsp;<b>[...]</b></p>
+          <div class="py-2">
+            <div class="py-5 mx-auto col-md-12 col-10 bg-light py-5">
+              <div class="col-md-12" >
+                <h3 class="mb-2 text-primary text-left"><span>Posts:</span></h3>
+                <div class="col-md-12">
+                  <div v-for="item in dadosUser.posts">
+                    <div class="py-3">
+                      <div class="py-1 mx-auto col-md-12 col-12 bg-white shadow">
+                        <div class="row mb-4">
+                          <div class="col-3 text-center" v-if="item.image"> <img class="img-fluid d-block mx-auto" height="100" v-bind:src="item.image"> </div>
+                          <div class="col-9">
+                            <h5 class="text-primary"><b>{{item.title}}</b></h5>
+                            <small class="text-primary"><i>Criado em {{item.created_at}} | Última edição em {{item.updated_at}}</i></small>                                  
+                            <p class="mb-0 text-justify">{{item.content}}</p>
+                            <br>
+                            <div class="col-12">
+                              <a class="btn btn-outline-primary" v-on:click="verMais(item.id)">Ver mais</a>&nbsp;&nbsp;
+                              <a class="btn btn-outline-secondary" v-on:click="editar(item.id)">Editar</a>&nbsp;&nbsp;
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div> 
-
-      <!--paginação-->
-	    <div class="row" v-if="dados.data">
-        <div class="py-2">
-          <div class="container">
-            <div class="col-md-12">
-              <ul class="pagination">
-                <div v-for="n in dados.last_page">
-                  <li class="page-item active" v-if="dados.current_page == n">
-                    <a class="page-link" href="#" v-on:click="changePage(n)"><span>{{n}}</span></a>
-                  </li>
-                  <li class="page-item" v-if="dados.current_page != n">
-                    <a class="page-link" href="#" v-on:click="changePage(n)"><span>{{n}}</span></a>
-                  </li>
-                </div>
-              </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
-
+  
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/axios@0.12.0/dist/axios.min.js"></script>
 
-    <script type="text/javascript" src="scripts/script_home.js"></script>
+    <script type="text/javascript" src="scripts/script_conta.js"></script>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
-
