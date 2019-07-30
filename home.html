@@ -108,7 +108,6 @@
                 <div class="col-md-12" >
                   <h3 class="mb-2 text-center">{{item.title}}</h3>
                   <img class="img-fluid d-block mx-auto" v-bind:src="item.image">
-                  <h6 class="text-primary" ><span><b>Autor: {{item.user_id}}</b></span><br><span v-if="item.created_at">Criado em {{item.created_at}}</span> | <span v-if="item.updated_at">Última edição em {{item.updated_at}}</span></h6>
                   <p class="text-justify">{{item.content}}&nbsp;<b>[...]</b></p>
                   <a class="btn btn-outline-primary text-right" v-on:click="verMais(item.id)">Ver mais...</a>
                 </div>
