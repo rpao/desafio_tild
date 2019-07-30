@@ -39,7 +39,7 @@ const logoutForm = new Vue({
       e.preventDefault();
       idUser = undefined;
       localStorage.removeItem('idUser');
-      window.location.reload();
+      window.location.href = "home.html";
     }
   }
 })

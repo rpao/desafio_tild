@@ -1,10 +1,5 @@
-// o que falta:
-// 1 - pegar o nome dos autores pelo id pra colocar na página
-// 2 - efetuar login
-
 // url para consumir api e obter lista de todos os posts com paginação
 var urlListPost = "https://desafio.tild.com.br/api/posts";
-var urlUser = "https://desafio.tild.com.br/api/users/";
 
 // GET para obter a primeira pagina de posts
 $.get(urlListPost+"?page=1", function( data ) {
@@ -12,15 +7,14 @@ $.get(urlListPost+"?page=1", function( data ) {
   dados.user_id = idUser;
 });
 
-function reload(){
-  window.location.reload();
-}
-
 //VERIFICAÇÃO DE USUÁRIO, LOGIN E LOGOUT
 //obtem id do usuário logado
 var idUser = localStorage.idUser;
 
-// GET para obter a primeira pagina de posts
+//login
+var urlUser = "https://desafio.tild.com.br/api/users/";
+
+// GET para obter usuario
 $.get(urlUser+idUser, function( data ) {
   if (!data){
     localStorage.removeItem('idUser');
@@ -28,7 +22,11 @@ $.get(urlUser+idUser, function( data ) {
   }
 });
 
-//login
+
+function reload(){
+  window.location.reload();
+}
+
 const loginForm = new Vue({
   el: '#loginForm',
   data: {
